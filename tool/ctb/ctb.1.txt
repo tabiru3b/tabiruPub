@@ -1,0 +1,76 @@
+= ctb(1)
+:doctype: manpage
+:man manual: ctb title
+
+== NAME
+ctb - ctb stands for C tool box
+
+== SYNOPSIS
+[verse]
+*ctb* <key> [args]
+
+== DESCRIPTION
+ctb is a container of tiny commands.
+
+== EXAMPLES
+* You can get a hexadecimal dump of a file.
+----
+$ ctb hdmp flnm
+$ ctb chist flnm
+----
+
+== OPTIONS
+hdmp [source] -- dumps hexadecimal of a source file.
+
+b2h [source] -- binary to hexadecimal.
+
+h2b [source [result]] -- hexadecimal to binary.
+
+b2url [-f] [source] -- binary to url string.
+
+url2b [-f] [source] -- url string to binary.
+
+chist [-z[C]] [source] -- character histogram.
+
+b64 [source [result]] #decoding -- decode base64.
+
+B64 [source [result]] #encoding -- encode base64.
+
+b62 [source [result]] #decoding -- decode base62.
+
+B62 [source [result]] #encoding -- encode base62.
+
+u8h2u hex -- convert a hexadecimal utf-8 string to a U+nnnn expression.
+
+u2h8u U+nnnn -- convert a U+nnnn expression to a hexadecimal utf-8 string.
+
+crlf [-ft] [source [result]] -- convert EOL. 'ft' means from/to c|l|2.
+
+maxline [-v] [source] -- check the maximum line length of a file.
+
+nullitems [source] -- count null lines.
+
+qp [source [result]] -- decode quoted-printable string.
+
+xor [-ky] [source [result]] -- get an exclusive-or'ed texts.  ky = 0..255
+
+rot13 [source] -- rot13
+
+portion range [source] -- get a portion of a file.  range := skip,(end+1|+size|-size)
+
+list7z [source] -- converts .zip list file from cp932 to utf-8.
+
+cut [-dC] [range] [source [result]] -- extract columns.  range := from[-to]
+
+== SEE ALSO
+ece(1)
+
+== BUGS
+There may be some bugs. ;-)
+
+== AUTHORS
+ctb is written by Tomio Abiru.
+
+== COPYRIGHT
+Specify your copyright information.
+

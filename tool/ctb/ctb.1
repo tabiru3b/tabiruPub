@@ -1,0 +1,131 @@
+'\" t
+.\"     Title: ctb
+.\"    Author: [see the "AUTHORS" section]
+.\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
+.\"      Date: 05/24/2016
+.\"    Manual: ctb title
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "CTB" "1" "08/06/2022" "\ \&" "ctb title"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+ctb \- ctb stands for C tool box
+.SH "SYNOPSIS"
+.sp
+.nf
+\fBctb\fR <key> [args]
+.fi
+.SH "DESCRIPTION"
+.sp
+ctb is a container of tiny commands\&.
+.SH "EXAMPLES"
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+You can get a hexadecimal dump of a file\&.
+.RE
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ ctb hdmp flnm
+$ ctb chist flnm
+.fi
+.if n \{\
+.RE
+.\}
+.SH "OPTIONS"
+.sp
+hdmp [source] \(em dumps hexadecimal of a source file\&.
+.sp
+b2h [source] \(em binary to hexadecimal\&.
+.sp
+h2b [source [result]] \(em hexadecimal to binary\&.
+.sp
+b2url [\-f] [source] \(em binary to url string\&.
+.sp
+url2b [\-f] [source] \(em url string to binary\&.
+.sp
+chist [\-z[C]] [source] \(em character histogram\&.
+.sp
+b64 [source [result]] #decoding \(em decode base64\&.
+.sp
+B64 [source [result]] #encoding \(em encode base64\&.
+.sp
+b62 [source [result]] #decoding \(em decode base62\&.
+.sp
+B62 [source [result]] #encoding \(em encode base62\&.
+.sp
+u8h2u hex \(em convert a hexadecimal utf\-8 string to a U+nnnn expression\&.
+.sp
+u2h8u U+nnnn \(em convert a U+nnnn expression to a hexadecimal utf\-8 string\&.
+.sp
+crlf [\-ft] [source [result]] \(em convert EOL\&. \fIft\fR means from/to c|l|2\&.
+.sp
+maxline [\-v] [source] \(em check the maximum line length of a file\&.
+.sp
+nullitems [source] \(em count null lines\&.
+.sp
+qp [source [result]] \(em decode quoted\-printable string\&.
+.sp
+xor [\-ky] [source [result]] \(em get an exclusive\-or\(cqed texts\&. ky = 0\&.\&.255
+.sp
+rot13 [source] \(em rot13
+.sp
+gather file1 file2 newfile \(em gather two files into a new file\&.
+.sp
+cutl [\-nN] source [result] \(em cut lines short\&. N = 0\&.\&.255 72 default
+.sp
+portion range [source] \(em get a portion of a file\&. range := skip,(end+1|+size|\-size)
+.sp
+list7z [source] \(em converts \&.zip list file from cp932 to utf\-8\&.
+.sp
+vsep k hfile src L R form \(em separate a csv into L and R\&.
+.sp
+vjoin ha hb hc \(em join ha and hb into a hc\&.
+.sp
+genx0 source [result] \(em clear .xls date *buggy\&.
+.sp
+xlsdt source \(em show .xls date\&.
+.sp
+chkbom source \(em check starting three bytes\&.
+.sp
+genpw [length] \(em generate a password\&.
+.SH "SEE ALSO"
+.sp
+ece(1)
+.SH "BUGS"
+.sp
+There may be some bugs\&. ;\-)
+.SH "AUTHORS"
+.sp
+ctb is written by Tomio Abiru\&.
+.SH "COPYRIGHT"
+.sp
+Specify your copyright information\&.
