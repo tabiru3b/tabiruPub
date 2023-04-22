@@ -1,0 +1,19 @@
+kit/dtp
+
+Contents:
+@f=F[wyf:/^R"^M
+docbook [[ docbook: ]]
+tex [[ tex: ]]
+log [[ log: ]]
+
+docbook:
+
+tex:
+\documentclass[uplatex]{jsarticle}
+\begin{document}
+I'm a cat.  吾輩は猫である。 And, don't have my own name, yet.
+\end{document}
+
+log:
+2023.4.22
+simple is best.

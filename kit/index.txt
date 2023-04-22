@@ -1,0 +1,30 @@
+kit
+
+Contents:
+@f=F[wyf:/^R"^M
+dtp [[ dtp: ]]
+lang [[ lang: ]]
+www [[ www: ]]
+log [[ log: ]]
+
+dtp:
+
+lang:
+
+www:
+<!DOCTYPE html>
+<html><head>
+<!-- charset = ISO-2022-JP | Shift_JIS | EUC-JP | UTF-8 -->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>myHome</title>
+</head><body><h1>It works!</h1>
+</body></html>
+
+<?php
+date_default_timezone_set('Asia/Tokyo');
+phpinfo();
+?>
+
+log:
+2023.4.22
+simple is best.
