@@ -1,0 +1,525 @@
+prg/kbd/kie
+き
+
+Contents:
+clip
+memo
+log
+
+clip:
+echo -n "abc" | xclip
+xclip -o
+echo -n "abc" | xclip -i -select clipboard
+echo "Ctrl+Shift+v"
+    GtkClipboard *gcb = gtk_widget_get_clipboard(GTK_WIDGET(cmn.window),GDK_SELECTION_CLIPBOARD);
+    struct TBOXBASE *tb = &cmn.tbx;
+    gtk_clipboard_set_text(gcb,(char *)tb->iBuf,tb->nb);
+
+memo:
+cairoText caret 
+
+cairoText:
+cairo_text_extents_t te;
+cairo_set_source_rgb(cr,0.0,0.0,0.0);
+cairo_select_font_face(cr,"Georgia",CAIRO_FONT_SLANT_NORMAL,CAIRO_FONT_WEIGHT_BOLD);
+cairo_set_font_size(cr,1.2);
+cairo_text_extents(cr,"a",&te);
+/* y_bearing is a negative value from the base line to the top */
+cairo_move_to(cr,0.5-te.width/2-te.x_bearing,0.5-te.height/2-te.y_bearing);
+cairo_show_text(cr,"a");
+
+caret:
+how to ?
+
+log:
+2022.8.1
+^w で kie.txt に書き出す。
+
+2022.7.14
+myDrawText は必ずすべて描く。pcsr=-1 でなければ途中で必ず cursor 位置を
+通過する。文字描画に用いる cx cy は (10,10) から y 方向には lineHeight 
+ずつ増えていく。showCaret の timing では文字単位ではなく pixel で指定
+できた方が効率が良い。
+if (pcsr>=0){
+  if (csrdir == 2 | 3 | mousePointed){
+  } else {
+  }
+} else {
+}
+while (){
+  pb0=pb;
+  if ((pcsr==-1)&&(cy<=ty)&&(ty<cy+lineHeight)){
+  } else {
+  }
+  if (pb==pcsr){
+    csrpos[0]=cx; csrpos[1]=cy;
+  }
+}
+if (pcsr==-1){
+  csrpos[0]=cx;
+  csrpos[1]=cy;
+}
+csrdir=4;
+何とかなったかな。
+
+2022.7.13
+漸く使えるようになった感じ。
+cursor up/down が難しい。
+
+2022.7.12
+cc -std=c11 -O2 -Wall -o t0 t0.c
+./t0
+size:174077, line:9999
+0: 2250 -- LF # TAB
+1: 7517 -- e0 LF # TAB SPACE
+2: 0 -- e0 other
+3: 127 -- c0 LF # TAB
+4: 0 -- c0 other
+5: 104 -- nn LF TAB
+6: 1 -- other
+total: 9999
+
+2022.7.10
+t0.c -- to check M01
+
+2022.7.9
+key kiMap
+
+2022.7.8
+which is better to use gtk_main or app->run ?
+I'll try gtk_main, first.
+k0.c -- Couldn't find the way to draw a line.
+https://www.cairographics.org/tutorial/
+https://zetcode.com/gfx/cairo/basicdrawing/
+
+Try app->run
+k1.c -- 
+
+https://stackoverflow.com/questions/44098084/how-do-i-handle-keyboard-events-in-gtk3
+gtk_widget_add_events(window,GDK_KEY_PRESS_MASK);
+g_signal_connect(G_OBJECT(window),"key_press_event",G_CALLBACK(my_keypress_function),NULL);
+gboolean my_keypress_function( GtkWidget *widget, GdkEventKey *event, gpointer data ){
+  if (event->keyval == GDK_KEY_space){
+    printf("SPACE KEY PRESSED!");
+    return TRUE;
+  }
+  return FALSE;
+}
+
+2022.2.23
+c11
+
+2021.9.28
+^Q
+
+2021.8.21
+上下左右HOMEENDLBtnDn
+
+2021.8.20
+編集したいな。やりかけたが、印刷してからにしよう。
+https://nyaruru.hatenablog.com/entry/20070309/p1
+https://nyaruru.hatenablog.com/entry/20070310/p1
+https://nyaruru.hatenablog.com/entry/20070325/p1
+https://qiita.com/kenjiuno/items/0bf31538c02c8932f12f
+https://github.com/microsoft/Windows-classic-samples
+
+2021.8.19
+https://qiita.com/496_/items/95acf68eaf31fd57f44e
+https://d-toybox.com/studio/weblog/show.php?id=2018021600
+https://charatsoft.sakura.ne.jp/develop/toaru2/index.php?did=3
+https://docs.microsoft.com/ja-jp/windows/win32/tsf/text-services-framework
+https://docs.microsoft.com/ja-jp/windows/apps/design/input/input-method-editor-requirements
+http://www.neko.ne.jp/~freewing/software/ms_windows_ime_tsf_imm_api/
+
+2021.8.18
+k0.c --> kie.c
+ToDo:
+kiKey_106 と kiMap の置き場所
+] command 實裝
+
+2021.8.15
+Ad dvorak
+Aq qwerty
+あ 全角かな
+ア 全角カナ
+Ａ 全角qwerty
+Ｄ 全角dvorak
+き ki
+Shift+K56
+1:12 2:16 3:24
+Q:Aq W:Ad E:Ａ R:Ｄ
+S:あ D:ア SPACE:き/system(dvorak)
+
+2021.8.14
+6 分類で OK
+0:2093 1:197 2:14 3:7532 4:63 5:100 6:0 7:0 n:9999
+012 -- \0 \0
+3 -- 全 \0
+4 -- カナ ' '
+5 -- n n
+
+2021.8.13
+kiMap には次の種類しか存在しないか
+0. 空行
+1. # +alpha
+2. TAB +alpha
+3. 全角 (TAB +alpha)|\n
+4. 半角カナ+' ' TAB +alpha
+5. 半角数字+半角数字 TAB +alpha
+6. others
+
+2021.8.12
+clipboard を使う方法をまとめておく。
+http://wisdom.sakura.ne.jp/system/winapi/win32/win90.html
+HGLOBAL hg = GlobalAlloc(GHND|GMEM_SHARE,128);
+if (hg != NULL){
+  LPTSTR strMem = (LPTSTR)GlobalLock(hg);
+  lstrcpy(strMem,TEXT("abc"));
+  GlobalUnlock(hg);
+  if (OpenClipboard(hWnd)){
+    EmptyClipboard();
+    SetClipboardData(CF_UNICODETEXT,hg);
+    CloseClipboard();
+  } else {
+    GlobalFree(hg);
+  }
+}
+if (IsClipboardFormatAvailable(CF_TEXT) != 0){
+  if (OpenClipboard(NULL)){
+    HANDLE hTxt = GetClipboardData(CF_TEXT);
+    if (hTxt != NULL){
+      LPTSTR strText,strClip;
+      strText = malloc(GlobalSize(hg));
+      strClip = GlobalLock(hg);
+      lstrcpy(strText,strClip);
+      GlobalUnlock(hg);
+      CloseClipboard();
+      TextOut(hDC,strText,lstrlen(strText));
+      free(strText);
+    }
+  }
+}
+
+2021.8.8
+半角の editor を作る。
+
+2021.8.7
+kiMap = 甲 1..4999 乙 5000..9999 #0 は欠行
+甲半 = 00:1..99 01:100..199 ... 48:4800..4899 49:4900..4999
+乙半 = 00:5000..5099 01:5100..5199 ... 49:9900..9999
+甲00 = 甲 1..49 乙 50..99
+甲00甲 = 00: 01: ...
+甲01甲 = 00:々 01:
+甲02甲 = 00:◇ 01:
+短文 editor を作る。作った文章は Clip できる。
+・kiMap を読み込み
+・配字盤を表示し
+・文章を生成する
+・Clip 機能など
+
+2018.8.18
+甲打で配鍵盤を表示する。kiMap の構造は kiMap 内に詳述あり
+全 9999 行は 100 block からなる。第 1 block は 99 行、第 2 から第 100 
+block までは 100 行ずつ。第 1 block の 1 行目と 2 行目は表甲鍵盤と裏甲鍵盤
+の標題用で、3--99 行目はコメント領域。また、第 51 block (5000--5099行目) 
+の全部も、対応する打鍵が無いのでコメント領域として使われている。第 2--50 
+block は表甲鍵盤に、第 52--100 block は裏甲鍵盤にそれぞれ対応している。
+ここでは第 1 及び第 51 block をコメント block、第 2--50 block を表 block、
+第 52--100 block を裏 block と呼び分け、非コメント block である表 block 
+と裏 block を合わせて実 block と呼ぶ事にする。各実 block は 50 行ずつの
+前半と後半とに分かれ、それぞれ表乙鍵盤と裏乙鍵盤に対応する。いずれの 50 
+行も、第 1 行目は標題行、第 2--50 行が乙鍵盤の 01--49 に対応している。
+ここまでで配字案内に表示する内容が確定した。ファイル全体の行番号で表すと、
+pon
+0100々 0200◇ 0300亜 ... 1100検 1200┨ 4900＊
+1300わ 1400ら 1500や ... 2200勝 2300拭 2400まる１
+2500な 2600た 2700さ ... 3400邸 3500董 3600α
+3700如 3800函 3900は ... 4500痢 4600蓮 4700я
+4800あ (4900＊)
+Shift
+5100一弌 ... 6200日曄 9900＊
+6300木棔 ... 7300缶罅 7400肉隋
+7500艸茵 ... 8500髟髻 8600鳥鵝
+8700堯堯 ... 9200纊纊 ... 9500釗釗 x x
+98000001
+甲打-01
+0101日 0102曜 0103時 ... 0111   0112   0149
+0113´ 0114｀ 0115¨ ... 0122ゞ 0123〃 0124仝
+0125々 0126〆 0127〇 ... 0134∥ 0135｜ 0136
+0137… 0138‥ 0139   ... 0145   0146   0147
+0148１
+0151 ... 0165± ... 0197◎
+甲打s01
+5101弌 ... 5112亂 5149
+5113亅 ... 5123亰 5124亳
+5125亶 ... 5135价 5136伉
+5137佚 ... 5146侘 5147佻
+5148
+5151佩 ... 5165俐 ... 5197傲 5198！
+次は表示。表示位置は kiKey_106 の hh|y,xx なる配置を使う
+setkkey で kiKey_106 取り込み。次は表示
+
+2017.1.24
+[[ b4.c ]]
+
+2017.1.10
+         1    2    3    4    5    6    7    8
+    02468024680246802468024680246802468024680246
+    --------------------------------------------
+ 1 | 51 01 02 03 04 05 06 07 08 09 10 11 12 49  |
+ 2 |     13 14 15 16 17 18 19 20 21 22 23 24    |
+ 3 |  54  25 26 27 28 29 30 31 32 33 34 35 36   |
+ 4 |   50  37 38 39 40 41 42 43 44 45 46 47     |
+ 5 | 52       53 55    48    56 57              |
+    --------------------------------------------
+              鍵盤模式図 (106鍵盤)
+
+  １～49    文字鍵、
+  50～53  押上鍵(Shift、CapsLock、Ctrl、Alt)
+         (押している間、個々の鍵をというより、盤面を一時的に替える鍵)
+  54～57    百相鍵盤の機能指示鍵、
+  58～63    倣い入力の時だけ百相鍵盤が指示に使う鍵、
+  64～66    右側にある Shift、Ctrl、Alt
+
+2017.1.7
+兎に角 b3 で先に進む
+[[ b3.c ]]
+K 番号追加。すべてのキーで同様に配鍵盤を切り替えるわけではないな。
+そのための table を作るか。それとも項目を追加するか。
+残件
+Shift を検出するのは GetKeyState(VK_SHIFT) で、0x8000 が
+立っていれば押されている。0x0001 はトグルらし(Caps みたいな)
+甲打で配字盤を切り替える
+甲乙で文字を特定
+Clipboard にコピーしてみる
+
+2016.12.26
+https://www.win.tue.nl/~aeb/linux/kbd/scancodes-1.html
+scancode の説明あり
+http://softwaretechnique.jp/OS_Development/kernel_development09.html
+詳細なキーボードの解説
+https://msdn.microsoft.com/en-us/library/system.windows.forms.keys(v=vs.110).aspx
+.NET の Keys Enumeration
+
+2016.12.20
+取り込みとキー入力はできた。次はキーによる状態遷移だ。
+
+2016.11.4
+m0[100,100] への取り込み
+
+2016.10.28
+structure of kiMap LF UTF-8
+1 e3 80 85 09 々 
+2 e5 bc 8c 09 弌 shift
+3 23
+...
+99 23
+100 e3 80 85 09 々
+101 e6 97 a5 09 日
+102 e6 9b 9c 09 曜
+103 e6 99 82 09 時
+104 -- 112 0a
+113 c2 b4 09 accentable
+114 ef bd 80 09 disaccentable
+115 c2 a8 09 umuraut
+116 ef bc be 09 circumflex
+117 ef bf a3 09 overline
+118 ef bc bf 09 underline
+119 e3 83 bd 09 繰り返しヽ
+120 e3 83 be 09 濁点繰り返しヾ
+121 e3 82 9d 09 繰り返しゝ
+122 e3 82 9e 09 濁点繰り返しゞ
+123 e3 80 83 09 繰り返し〃
+124 e4 bb 9d 09 繰り返し仝
+125 e3 80 85 09 繰り返し々
+...
+148 ef bc 91 09 １
+149 0a
+150 c2 b1 09 ±
+...
+165 c2 b1 09 ±
+166 c3 97 09 ×
+...
+197 e2 97 8e 09 ◎
+198 0a
+199 0a
+200 e2 97 87 09 ◇
+201 e2 97 87 09 ◇
+...
+247 e2 86 93 09 ↓
+248 ef bc 92 09 ２
+249 0a
+250 e2 88 9a 09 √
+...
+300 e4 ba 9c 09 亜
+301 e4 ba 9c 09 亜
+302 e5 94 96 09 唖
+...
+347 囲
+348 ３
+349 0a
+350 夷
+351 夷
+...
+397 蔭
+398 0a
+399 0a
+400 院
+401 院
+...
+447 穎
+448 ４
+449 0a
+450 頴
+451 頴
+...
+標準状態では
+100 200 300 400 ... 4800 4900 5000
+ 々  ◇  亜  院 ...  あ   ＊   
+5100 5200 5300 5400 ... 
+ 一   人   刀   口
+表示されないが、それぞれの裏は
+150 250 350 450 ... 4850 4950
+ ±  √  夷  頴 ...  ぁ   ＊
+初期状態から３を押すと
+301 302 303 ... 347 348 349
+ 亜  唖  娃 ...  囲  ３
+その後で shift を押すと
+351 352 353 ... 397 398 399
+ 夷  委  威      蔭
+
+2016.5.4
+ff61--ff9f = ef bd a1 -- ef be 9f
+
+2016.4.14
+PS C:\Users\tomio\prg\kbd\work> ./cstb kM0
+0 null 2093
+1 comment 197
+2 1-byte 0
+3 2-bytes 0
+4 3-bytes 7709
+5 tabbed 14284
+6 not-tab 224841 -- tab でなければ何？
+そもそも 9999 行しかないのに総和が大きすぎる。要再試行
+
+2016.3.14
+キー入力は大体できた。次は変換だ。
+
+2016.3.1
+ESC 1B 10001
+F1 70 3B0001 (AD 1200001)
+F2 71 3C0001 (AE 12E0001)
+F3 72 3D0001 (AF 1300001)
+F4 73 3E0001 (?)
+F5 74 3F0001 (74 3F0001)
+F6 75 400001 (FF 1730001)
+F7 76 410001 (?)
+F8 77 420001 (11 201D0001)
+F9 78 430001 (?)
+F10
+F11
+F12
+Insert 2D 1520001
+PrtSc - 
+Delete 2E 1530001
+Home 24 1470001
+End 23 14F0001
+PgUp 21 1490001
+PgDn 22 1510001
+半全 C0 290001
+1 31 20001
+2 32 30001
+3 33 40001
+4 34 50001
+5 35 60001
+6 36 70001
+7 37 80001
+8 38 90001
+9 39 A0001
+0 30 B0001
+- DB C0001
+^ DD D0001
+\ FF 7D0001
+BS 8 E0001
+NumLock 90 1450001
+/ 6F 1350001
+* 6A 370001
+- 6D 4A0001
+TAB 9 F0001
+Q DE 100001
+W BC 110001
+E BE 120001
+R 50 130001
+T 59 140001
+Y 46 150001
+U 47 160001
+I 43 170001
+O 52 180001
+P 4C 190001
+@ BF 1A0001
+[ BB 1B0001
+Enter D 1C0001
+7 24 470001
+8 26 480001
+9 21 490001
++ 6B 410001
+CapsLk 14 3A0001
+A 41 1E0001
+S 4F 1F0001
+D 45 200001
+F 55 210001
+G 49 220001
+H 44 230001
+J 48 240001
+K 54 250001
+L 4E 260001
+; 53 270001
+: BD 280001
+] DC 2B0001
+4 64 4B0001
+5 65 4C0001
+6 66 4D0001
+Shift 10 2A0001
+Z BA 2C0001
+X 51 2D0001
+C 4A 2E0001
+V 4B 2F0001
+B 58 300001
+N 42 310001
+M 4D 320001
+, 57 330001
+. 56 340001
+/ 5A 350001
+\ C1 730001
+Shift 10 360001
+Up 26 1480001
+1 61 4F0001
+2 62 500001
+3 63 510001
+Enter D 11C0001
+Ctrl 11 1D0001
+Fn -
+L-Win 5B 15B0001
+Alt -
+無変換 EB 7B0001
+SPACE 20 390001
+変換 FF 790001
+ひらがな FF 700001
+R-Opt 5D 15D0001
+Ctrl 11 11D0001
+Left 25 14B0001
+Down 28 1500001
+Right 27 14D0001
+0 60 520001
+. 6E 530001
+
+2016.1.20
+b0.c executed
+
+2016.1.19
+http://wisdom.sakura.ne.jp/system/winapi/win32/win30.html
+
+2016.1.18
+https://msdn.microsoft.com/en-us/library/windows/desktop/ms645530(v=vs.85).aspx
+Keyboard Input
+About Keyboard Input
