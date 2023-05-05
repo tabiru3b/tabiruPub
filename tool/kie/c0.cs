@@ -1,5 +1,6 @@
 /*
 *F: c0.cs
+* Modified: 2023.5.5 allowed gzip
 * Coded at: 2023.3.18 by T. Abi from t0w.cs
 $fw32 = "C:\Windows\Microsoft.NET\Framework"
 $fw64 = "C:\Windows\Microsoft.NET\Framework64"
@@ -11,6 +12,7 @@ $mb4 = "$fw64\v4.0.30319\MSBuild.exe"
 */
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
@@ -94,20 +96,34 @@ C
       return v;
     }
 
+    void getKeyAssignBody( StreamReader sr ){
+      int n = 0;
+      string buf = sr.ReadLine();
+      while (buf.Length > 9){
+        int i = Int32.Parse(buf.Substring(9, 2));
+        kky[i, 0] = i;
+        kky[i, 1] = hex2(buf.Substring(0, 2));
+        kky[i, 2] = (int)buf[3] - '0';
+        kky[i, 3] = Int32.Parse(buf.Substring(5, 2));
+        n++;
+        buf = sr.ReadLine();
+      }
+      nKeys = n;
+    }
+
     void getKeyAssign(){
-      using (StreamReader sr = new StreamReader(flnm)){
-        int n = 0;
-        string buf = sr.ReadLine();
-        while (buf.Length > 9){
-          int i = Int32.Parse(buf.Substring(9, 2));
-          kky[i, 0] = i;
-          kky[i, 1] = hex2(buf.Substring(0, 2));
-          kky[i, 2] = (int)buf[3] - '0';
-          kky[i, 3] = Int32.Parse(buf.Substring(5, 2));
-          n++;
-          buf = sr.ReadLine();
+      if (flnm.Substring(flnm.Length-3) == ".gz"){
+        using (FileStream fsIn = File.Open(flnm, FileMode.Open)){
+          using (GZipStream cs = new GZipStream(fsIn, CompressionMode.Decompress)){
+            using (StreamReader sr = new StreamReader(cs)){
+              getKeyAssignBody(sr);
+            }
+          }
         }
-        nKeys = n;
+      } else {
+        using (StreamReader sr = new StreamReader(flnm)){
+          getKeyAssignBody(sr);
+        }
       }
     }
 
@@ -137,13 +153,14 @@ C
         if (kky[i, 3] > 0){
           rc.X = kky[i, 3]*4 +5;
           rc.Y = kky[i, 2]*20 +110 +5;
-          g.DrawRectangle(pen1, rc);
-          if (k1 == shift+kky[i, 0]){
+          if (k1 == kky[i, 0]){
             g.DrawRectangle(pen1, rc.X-6, rc.Y-6, 20, 20);
           }
           if ((kky[i, 0] >= 1) && (kky[i, 0] <= 49)){
             string ss = kiMp.getKeyTop(kky[i, 0], k1, shift);
             g.DrawString(ss, drawFont, drawBrush, rc.X-5, rc.Y-2);
+          } else {
+            g.DrawRectangle(pen1, rc);
           }
         }
       }
@@ -206,17 +223,31 @@ C
       }
     }
 
-    void getKeyMap(){
-      using (StreamReader sr = new StreamReader(flnm)){
-        int n = 0;
-        tf[n, 0] = '\0';
-        tf[n, 1] = '\0';
+    void getKeyMapBody( StreamReader sr ){
+      int n = 0;
+      tf[n, 0] = '\0';
+      tf[n, 1] = '\0';
+      n++;
+      string buf = sr.ReadLine();
+      while (buf != null){
+        updt(n, buf);
         n++;
-        string buf = sr.ReadLine();
-        while (buf != null){
-          updt(n, buf);
-          n++;
-          buf = sr.ReadLine();
+        buf = sr.ReadLine();
+      }
+    }
+
+    void getKeyMap(){
+      if (flnm.Substring(flnm.Length-3) == ".gz"){
+        using (FileStream fsIn = File.Open(flnm, FileMode.Open)){
+          using (GZipStream cs = new GZipStream(fsIn, CompressionMode.Decompress)){
+            using (StreamReader sr = new StreamReader(cs)){
+              getKeyMapBody(sr);
+            }
+          }
+        }
+      } else {
+        using (StreamReader sr = new StreamReader(flnm)){
+          getKeyMapBody(sr);
         }
       }
     }
@@ -257,8 +288,8 @@ C
 
   class KiBase {
     string kiDir;
-    const string KIKEY = "kiKey_106";
-    const string KIMAP = "kiMap";
+    const string KIKEY = "kiKey_106.gz";
+    const string KIMAP = "kiMap.gz";
     KiKbd kiKy;
     KiMap kiMp;
     int k1;
